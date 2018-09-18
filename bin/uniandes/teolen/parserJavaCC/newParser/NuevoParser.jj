@@ -1,0 +1,157 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+*/
+
+
+
+options
+{
+  static = false;
+}
+
+PARSER_BEGIN(NuevoParser)
+package uniandes.teolen.parserJavaCC.newParser;
+
+public class NuevoParser
+{
+static int []  mem = new int[20];
+}
+
+PARSER_END(NuevoParser)
+
+SKIP :
+{
+  " "
+| "\r" 
+| "\t"
+| "\n"
+}
+
+TOKEN : // OPERATORS 
+{
+  < PLUS : "+" >
+| < MINUS : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE : "/" >
+}
+
+TOKEN :
+{
+  <INT : (< DIGIT >)+ >
+| < #DIGIT : [ "0"-"9" ] >
+| < VAR : "$"< DIGIT > <DIGIT > >
+| < WRITE: "write" >
+}
+int one_line() :
+{int pos,r=0;}
+{
+  
+    ( pos = variable()"=" r=exp() ";"{mem[pos]=r;}
+   |
+    <WRITE>  pos =variable() ";"    {System.out.println("variable en pos:"+pos+" es "+mem[pos]);
+    }
+    )*
+  {     return r;
+  }
+    "end"
+  
+}
+
+int exp() :
+{
+int t,t1;
+  }
+{
+// Parses  E -> E + T
+//         E -> E - T
+//         E -> T
+//   in EBNF:  E -> T {+ T   | - T }
+  
+ t1=term() ( < PLUS > t=term() {t1+=t;}
+          |  < MINUS > t=term() {t1 -= t;}
+             )*
+ {   return t1;
+ }
+}
+
+int term() :
+{
+int f1,f;
+}
+{
+// Parses  T -> T * F
+//         T -> T / F
+//         T -> F
+//   in EBNF:  T -> F {* F   | /  F }
+  
+ f1 = fact() ( < MULTIPLY > f=fact() {    f1*=f;
+ }
+ | < DIVIDE > f=fact(){
+   f1 = f1 / f;
+}
+ )*
+{  return f1;
+}
+}
+int fact() :
+{
+// Parses  F -> B
+//         F -> -B
+//         B -> num
+//         B -> '(' E ')'
+//         B -> var
+//   in EBNF:  F -> [-](var |num |'(' E ')')
+int sign = 1, v,pos;
+ 
+}
+{
+    (< MINUS > {sign=-1;})? ( pos=variable() {v=mem[pos];}
+                             | v=num() |
+                               "(" v=exp() ")"
+                             )
+    {       return sign*v;
+    }
+}
+
+
+int num() throws Error:
+{	
+	int total=1;
+	Token token;
+}
+
+{
+	(token=<INT>)
+
+	{ 
+		try {
+			total = Integer.parseInt(token.image);
+		} 
+		catch (NumberFormatException ee) 
+		{
+			// Dada la forma de <ENTERO>, sabemos que solo puede tener digitos 
+			throw new Error("Numero demasiado grande"+token.image);
+		}
+		return total;
+     }
+     
+     
+}
+
+
+int variable() throws Error:
+{	
+	int pos,total=1;
+	Token token;
+}
+
+{
+	(token=<VAR>)
+
+	  
+{  
+		return  (token.image.charAt(1)-'0')*10 + (token.image.charAt(2)-'0');      
+}   
+}
+
+
