@@ -22,10 +22,6 @@ public interface NuevoParserConstants {
   int INT = 9;
   /** RegularExpression Id. */
   int DIGIT = 10;
-  /** RegularExpression Id. */
-  int VAR = 11;
-  /** RegularExpression Id. */
-  int WRITE = 12;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -43,11 +39,7 @@ public interface NuevoParserConstants {
     "\"/\"",
     "<INT>",
     "<DIGIT>",
-    "<VAR>",
-    "\"write\"",
-    "\"=\"",
     "\";\"",
-    "\"end\"",
     "\"(\"",
     "\")\"",
   };
