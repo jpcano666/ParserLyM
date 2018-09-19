@@ -42,13 +42,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MINUS:
     case CONSTANT:
-    case 12:
+    case 25:
       sum();
-      jj_consume_token(11);
+      jj_consume_token(24);
     {if (true) return 0;}
       break;
-    case 11:
-      jj_consume_token(11);
+    case 24:
+      jj_consume_token(24);
     {if (true) return 1;}
       break;
     default:
@@ -124,7 +124,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       element();
       break;
     case CONSTANT:
-    case 12:
+    case 25:
       element();
       break;
     default:
@@ -139,10 +139,10 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     case CONSTANT:
       jj_consume_token(CONSTANT);
       break;
-    case 12:
-      jj_consume_token(12);
+    case 25:
+      jj_consume_token(25);
       sum();
-      jj_consume_token(13);
+      jj_consume_token(26);
       break;
     default:
       jj_la1[6] = jj_gen;
@@ -167,7 +167,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x1a40,0x60,0x60,0x180,0x180,0x1240,0x1200,};
+      jj_la1_0 = new int[] {0x3401000,0x1800,0x1800,0x6000,0x6000,0x2401000,0x2400000,};
    }
 
   /** Constructor with InputStream. */
@@ -305,7 +305,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[14];
+    boolean[] la1tokens = new boolean[27];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
@@ -319,7 +319,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         }
       }
     }
-    for (int i = 0; i < 14; i++) {
+    for (int i = 0; i < 27; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;
