@@ -7,11 +7,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
   private static ArrayList<String > variables = new ArrayList<String >();
 
-  public static boolean buscarNombre(String a)
+  private static ArrayList<String > metodos = new ArrayList<String >();
+
+  public static boolean buscarNombre(String a, ArrayList<String > list)
   {
-        for(int i = 0; i < variables.size(); ++i)
+        for(int i = 0; i < list.size(); ++i)
         {
-          if(a.equalsIgnoreCase(variables.get(i)))
+          if(a.equalsIgnoreCase(list.get(i)))
           {
             return true;
           }
@@ -56,7 +58,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   }
 
   static final public void guardarVar() throws ParseException, Error {
-  Token t;
+  Token t = null;
     t = jj_consume_token(VAR);
     jj_consume_token(NAME);
     jj_consume_token(EQUALS);
@@ -76,7 +78,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     String[] f = a.split("=");
     String nombre = f[0].substring(3, f[0].length());
 
-        if(buscarNombre(nombre))
+        if(buscarNombre(nombre, variables))
         {
           {if (true) throw new Error("La variable ya existe");}
         }
@@ -90,28 +92,58 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         }
   }
 
-  static final public int one_line() throws ParseException {
-        Token t;
-        String a = "Hola";
+  static final public void methods() throws ParseException, Error {
+  Token t;
+    t = jj_consume_token(DEFINE);
+    jj_consume_token(NAME);
+    jj_consume_token(25);
+    label_2:
+    while (true) {
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case NAME:
+        ;
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        break label_2;
+      }
+      jj_consume_token(NAME);
+    }
+    jj_consume_token(26);
+    String a = t.image;
+    String[] f = a.split("(");
+    String nombre = f[0].substring(6, f[0].length());
 
-        int c = 12 + 15;
-        System.out.println(c);
+    if(buscarNombre(nombre, metodos))
+    {
+      {if (true) throw new Error("Ya existe el nombre");}
+    }
+    else if(nombre.equals("var"))
+    {
+      {if (true) throw new Error("Var est\u00c3\u00a1 reservado");}
+    }
+    else
+    {
+      metodos.add(nombre);
+    }
+  }
+
+  static final public int one_line() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case MINUS:
     case CONSTANT:
-    case 26:
+    case 25:
       sum();
-      jj_consume_token(25);
-    a = "Perro";
+      jj_consume_token(27);
     int b = 0;
     {if (true) return 0;}
       break;
-    case 25:
-      jj_consume_token(25);
+    case 27:
+      jj_consume_token(27);
     {if (true) return 1;}
       break;
     default:
-      jj_la1[1] = jj_gen;
+      jj_la1[2] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -120,7 +152,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
   static final public void sum() throws ParseException {
     term();
-    label_2:
+    label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -128,8 +160,8 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[2] = jj_gen;
-        break label_2;
+        jj_la1[3] = jj_gen;
+        break label_3;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
@@ -139,7 +171,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         jj_consume_token(MINUS);
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[4] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -149,7 +181,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
   static final public void term() throws ParseException {
     unary();
-    label_3:
+    label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULTIPLY:
@@ -157,8 +189,8 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[4] = jj_gen;
-        break label_3;
+        jj_la1[5] = jj_gen;
+        break label_4;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MULTIPLY:
@@ -168,7 +200,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         jj_consume_token(DIVIDE);
         break;
       default:
-        jj_la1[5] = jj_gen;
+        jj_la1[6] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -183,11 +215,11 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       element();
       break;
     case CONSTANT:
-    case 26:
+    case 25:
       element();
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[7] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -198,13 +230,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     case CONSTANT:
       jj_consume_token(CONSTANT);
       break;
-    case 26:
-      jj_consume_token(26);
+    case 25:
+      jj_consume_token(25);
       sum();
-      jj_consume_token(27);
+      jj_consume_token(28);
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -220,13 +252,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   static public Token jj_nt;
   static private int jj_ntk;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[8];
+  static final private int[] jj_la1 = new int[9];
   static private int[] jj_la1_0;
   static {
       jj_la1_init_0();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x800000,0x6802000,0x3000,0x3000,0xc000,0xc000,0x4802000,0x4800000,};
+      jj_la1_0 = new int[] {0x800000,0x800,0xa802000,0x3000,0x3000,0xc000,0xc000,0x2802000,0x2800000,};
    }
 
   /** Constructor with InputStream. */
@@ -247,7 +279,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -261,7 +293,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Constructor. */
@@ -278,7 +310,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -288,7 +320,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Constructor with generated Token Manager. */
@@ -304,7 +336,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   /** Reinitialise. */
@@ -313,7 +345,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 8; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 9; i++) jj_la1[i] = -1;
   }
 
   static private Token jj_consume_token(int kind) throws ParseException {
@@ -364,12 +396,12 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   /** Generate ParseException. */
   static public ParseException generateParseException() {
     jj_expentries.clear();
-    boolean[] la1tokens = new boolean[28];
+    boolean[] la1tokens = new boolean[29];
     if (jj_kind >= 0) {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 9; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -378,7 +410,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         }
       }
     }
-    for (int i = 0; i < 28; i++) {
+    for (int i = 0; i < 29; i++) {
       if (la1tokens[i]) {
         jj_expentry = new int[1];
         jj_expentry[0] = i;

@@ -8,11 +8,13 @@ public class P1_jpcano_jsgutierrezs{
 
   private static ArrayList<String > variables = new ArrayList<String >();
 
-  public static boolean buscarNombre(String a)
+  private static ArrayList<String > metodos = new ArrayList<String >();
+
+  public static boolean buscarNombre(String a, ArrayList<String > list)
   {
-	for(int i = 0; i < variables.size(); ++i)
+	for(int i = 0; i < list.size(); ++i)
 	{
-	  if(a.equalsIgnoreCase(variables.get(i)))
+	  if(a.equalsIgnoreCase(list.get(i)))
 	  {
 	    return true;
 	  }
@@ -28,7 +30,7 @@ TOKEN:
 | < PRINT : "print" >
 | < SMALL : ["a"-"z"] >
 | < LARGE : ["A"-"Z"] >
-| < NAME : (< SMALL >)+(< LARGE >)* >
+| < NAME : (< SMALL >)+(< LARGE >|< SMALL >)* >
 }TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
 | < EQUALS : "=" >
 | < MENOR : "< " >
@@ -38,19 +40,19 @@ TOKEN:
 | < IGUAL : "==" >
 | < DISTINTO : "!=" > }
 
-//12+12TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}
+//12+12TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < DIGIT : [ "0"-"9" ] >}
 
 void guardarVar() throws Error:
 {
-  Token t;
- }{
+  Token t = null;
+}{
   t = < VAR > <NAME >"="(< CONSTANT >)*
   {
     String a = t.image;
     String[] f = a.split("=");
     String nombre = f[0].substring(3, f[0].length());
 
-	if(buscarNombre(nombre))
+	if(buscarNombre(nombre, variables))
 	{
 	  throw new Error("La variable ya existe");
 	}
@@ -62,13 +64,36 @@ void guardarVar() throws Error:
 	{
 	  variables.add(nombre);
 	}
-  }}
-int one_line() :{
- 	Token t;
- 	String a = "Hola";
+  }
+}
 
- 	int c = 12 + 15;
- 	System.out.println(c);
+void methods() throws Error:
+{
+  Token t;
+}
+{
+  t = < DEFINE ><NAME >"("(< NAME >)*"):"
+  {
+    String a = t.image;
+    String[] f = a.split("(");
+    String nombre = f[0].substring(6, f[0].length());
+
+    if(buscarNombre(nombre, metodos))
+    {
+      throw new Error("Ya existe el nombre");
+    }
+    else if(nombre.equals("var"))
+    {
+      throw new Error("Var está reservado");
+    }
+    else
+    {
+      metodos.add(nombre);
+    }
+  }
+}
+
+int one_line() :{
+
 }{  sum() ";"  {
-    a = "Perro";
     int b = 0;    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    | < DIVIDE >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < CONSTANT >| "(" sum() ")"}
