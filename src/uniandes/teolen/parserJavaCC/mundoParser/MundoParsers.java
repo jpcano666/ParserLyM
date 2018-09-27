@@ -2,6 +2,7 @@ package uniandes.teolen.parserJavaCC.mundoParser;
 
 import java.util.*;
 
+import uniandes.teolen.parserJavaCC.P1.P1_jpcano_jsgutierrezs;
 import uniandes.teolen.parserJavaCC.myParser.ParserCAML;
 import uniandes.teolen.parserJavaCC.myParserDR.ParserDR;
 import uniandes.teolen.parserJavaCC.newParser.NuevoParser;
@@ -31,6 +32,7 @@ public class MundoParsers {
 	    parsers.add("Parser Prolog");
 	    parsers.add("Parser G");
 	    parsers.add("Nuevo Parser POST");
+	    parsers.add("P1_jpcano_jsgutierrezs");
 	    
 	    currentParser =  0;
 
@@ -60,6 +62,10 @@ public class MundoParsers {
 	}
 	public ParserG getGParser(){
 		return new ParserG(System.in);
+	}
+	
+	public P1_jpcano_jsgutierrezs getP1_jpcano_jsgutierrezs() {
+		return new P1_jpcano_jsgutierrezs(System.in);
 	}
 	
 	
@@ -176,6 +182,26 @@ public class MundoParsers {
 		     } catch (Error e) {
 		    	 resp = new String ("Error Lexico: "+e.getMessage());
 		     }
+		}
+		else if (parsers.get(currentParser).equals("P1_jpcano_jsgutierrezs")) {
+			P1_jpcano_jsgutierrezs nuevoParser = getP1_jpcano_jsgutierrezs();
+			P1_jpcano_jsgutierrezs.ReInit(new java.io.StringReader(texto));
+			try {
+				if(texto.startsWith("var ")) {
+					nuevoParser.guardarVar();
+				}
+				else if(texto.startsWith("define ")) {
+					P1_jpcano_jsgutierrezs.metodo();
+				}
+				else if(texto.startsWith("print ")) {
+					P1_jpcano_jsgutierrezs.print();
+				}
+				resp = new String("OK   " + "\n");
+			} catch (Exception e) {
+				resp = new String("Error de sintaxis: " + e.getMessage());
+			} catch (Error e) {
+				resp = new String ("Error lexico: " + e.getMessage());
+			}
 		}
 		return "\n SISTEMA " + parsers.get(currentParser) + ": " + resp + "\n";
 	}

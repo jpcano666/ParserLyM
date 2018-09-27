@@ -85,10 +85,12 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
         if(buscarNombre(nombre, variables))
         {
+          System.out.println("La variable ya existe");
           {if (true) throw new Error("La variable ya existe");}
         }
         else if(nombre.equalsIgnoreCase("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
         {
+          System.out.println("La palabra var est\u00c3\u00a1 reservada");
           {if (true) throw new Error("La palabra var est\u00c3\u00a1 reservada");}
         }
         else
@@ -411,6 +413,8 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   Token t;
     t = jj_consume_token(PRINT);
     jj_consume_token(LP);
+    expresionArit();
+    jj_consume_token(RP);
   }
 
   static final public int operadorArit() throws ParseException {
