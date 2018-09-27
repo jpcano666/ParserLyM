@@ -18,6 +18,13 @@ public class P1_jpcano_jsgutierrezs
 
   private static ArrayList<String > metodos = new ArrayList<String >();
 
+  public static void insert(Token value)
+  {
+    variables.add(value.image);
+  }
+
+  
+
   public static boolean buscarNombre(String a, ArrayList<String > list)
   {
 	for(int i = 0; i < list.size(); ++i)
@@ -68,36 +75,51 @@ SKIP :
 
 TOKEN:
 {
-  < IF : "if" >
-| < VAR : "var" >
-| < DEFINE : "define" >
-| < PRINT : "print" >
-| < SMALL : ["a"-"z"] >
-| < LARGE : ["A"-"Z"] >
-| < NAME : (< SMALL >)+(< LARGE >|< SMALL >)* >
+  < IF : "if" > //1
+| < VAR : "var" > //2
+| < DEFINE : "define" > //3
+| < PRINT : "print" > //4
+| < SMALL : ["a"-"z"] > //5
+| < LARGE : ["A"-"Z"] > //6
+| < IDENTIFIER : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])*> //7
+}
+
+TOKEN:
+{
+  < LP : "(" > //8
+| < RP : ")" > //9
+| < SEMICOLON : ":" >//10
+| < COMMA : "," > //11
 }
 
 TOKEN : /* OPERATORS */
 {
-  < PLUS : "+" >
-| < MINUS : "-" >
-| < MULTIPLY : "*" >
-| < DIVIDE : "/" >
-| < EQUALS : "=" >
-| < MENOR : "< " >
-| < MAYOR : " >" >
-| < MAYORIG : "<=" >
-| < MENORIG : " >=" >
-| < IGUAL : "==" >
-| < DISTINTO : "!=" > 
+  < PLUS : "+" > //12
+| < MINUS : "-" > //13
+| < MULTIPLY : "*" > //14
+| < DIVIDE : "/" > //15
+| < EQUALS : "=" > //16
+| < MODULO : "%" > //17
+}
+
+TOKEN:
+{
+  < ME : "<" > //18
+| < MA : ">" > //19
+| < PE : "<=" > //20
+| < LE : ">=" > //21
+| < EQ : "==" > //22
+| < DI : "!=" > //23
+| < AND : "&&" > //24
+| < OR : "||" > //25
 }
 
 //12+12
 
 TOKEN :
 {
-  < CONSTANT : (< DIGIT >)+ >
-| < DIGIT : [ "0"-"9" ] >
+  < CONSTANT : (["0"-"9"])+ > //25
+| < DECIMAL : (["0"-"9"])+["."](["0"-"9"])+ > //26
 }
 
 void guardarVar() throws Error:
@@ -105,7 +127,7 @@ void guardarVar() throws Error:
   Token t = null;
 }
 {
-  t = < VAR > <NAME >"="(< CONSTANT >)*
+  t = < VAR > <IDENTIFIER >"="(["-"]< CONSTANT >)*
   {
     String a = t.image;
     String[] f = a.split("=");
@@ -115,7 +137,7 @@ void guardarVar() throws Error:
 	{
 	  throw new Error("La variable ya existe");
 	}
-	else if(nombre.equalsIgnoreCase("var"))
+	else if(nombre.equalsIgnoreCase("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
 	{
 	  throw new Error("La palabra var está reservada");
 	}
@@ -126,12 +148,31 @@ void guardarVar() throws Error:
   }
 }
 
+void metodo() throws Error:
+{
+  Token t;
+}
+{
+  t = <IDENTIFIER >"("[(< IDENTIFIER >|"-"< CONSTANT >)(","(< IDENTIFIER >|"-"< CONSTANT >))*]")"
+  {
+    String a = t.image;
+    String[] f = a.split("(");
+    String nombre = f[0];
+
+    if(!buscarNombre(nombre, metodos))
+    {
+      throw new Error("El método no existe");
+    }
+  }
+}
+
 void methods() throws Error:
 {
   Token t;
 }
 {
-  t = < DEFINE ><NAME >"("< NAME >|(","< NAME >)*"):"
+  t = < DEFINE ><IDENTIFIER >"("[< IDENTIFIER >(","< IDENTIFIER >)*]"):"(ifSentence())*
+  
   {
     String a = t.image;
     String[] f = a.split("(");
@@ -141,7 +182,7 @@ void methods() throws Error:
     {
       throw new Error("Ya existe el nombre");
     }
-    else if(nombre.equals("var"))
+    else if(nombre.equals("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
     {
       throw new Error("Var está reservado");
     }
@@ -151,4 +192,64 @@ void methods() throws Error:
     }
   }
 }
+
+void operadores():
+{}
+{
+  < MA >
+| < EQ >
+| < ME >
+| < PE >
+| < LE >
+| < DI >
+}
+
+void ifSentence():
+{}
+{
+  < IF ><LP >condicion()","(expresionArit()|ifSentence())","(expresionArit()|ifSentence())
+}
+
+void valor():
+{
+}
+{
+  LOOKAHEAD(2)(< IDENTIFIER >|["-"]<CONSTANT >) | expresionArit()
+}
+
+void expresionArit():
+{}
+{
+  LOOKAHEAD(2)(["-"]< CONSTANT >|< IDENTIFIER >)
+| (< IDENTIFIER >|["-"]< CONSTANT >) operadorArit() (["-"]< CONSTANT >|< IDENTIFIER >|"["expresionArit()"]")
+}
+
+void condicion():
+{}
+{
+  valor()operadores()valor()
+}
+
+void print():
+{
+  Token t;
+}
+{
+  t = < PRINT >"("
+}
+
+int operadorArit():
+{}
+{
+  (< PLUS > { return 1; })
+| (< MINUS > {return 1; })
+| (< MULTIPLY > {return 1; })
+| (< DIVIDE > {return 1; })
+| (< MODULO > { return 1; })
+| { return 0; }
+
+{return 0; }
+}
+
+
 
