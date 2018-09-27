@@ -1,10 +1,18 @@
 /**
  * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
- */options{  static = true;}PARSER_BEGIN(P1_jpcano_jsgutierrezs)package uniandes.teolen.parserJavaCC.P1;
+ */
+options
+{
+  static = true;
+}
+
+PARSER_BEGIN(P1_jpcano_jsgutierrezs)
+package uniandes.teolen.parserJavaCC.P1;
 
 import java.util.ArrayList;
 
-public class P1_jpcano_jsgutierrezs{
+public class P1_jpcano_jsgutierrezs
+{
 
   private static ArrayList<String > variables = new ArrayList<String >();
 
@@ -21,31 +29,82 @@ public class P1_jpcano_jsgutierrezs{
 	}
 	return false;
   }
-    public static void main(String args []) throws ParseException  {    P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);    while (true)    {      System.out.println("Reading from standard input...");      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");      try      {        switch (P1_jpcano_jsgutierrezs.one_line())        {          case 0 :           System.out.println("OK.");          break;          case 1 :           System.out.println("Goodbye.");          break;          default :           break;        }      }      catch (Exception e)      {        System.out.println("NOK.");        System.out.println(e.getMessage());        P1_jpcano_jsgutierrezs.ReInit(System.in);      }      catch (Error e)      {        System.out.println("Oops.");        System.out.println(e.getMessage());        break;      }    }  }}PARSER_END(P1_jpcano_jsgutierrezs)SKIP :{  " "| "\r"| "\t"| "\n"}
+  
+  public static void main(String args []) throws ParseException
+  {
+    P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
+    while (true)
+    {
+      System.out.println("Reading from standard input...");
+      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");
+      try
+      {
+      }
+      catch (Exception e)
+      {
+        System.out.println("NOK.");
+        System.out.println(e.getMessage());
+        P1_jpcano_jsgutierrezs.ReInit(System.in);
+      }
+      catch (Error e)
+      {
+        System.out.println("Oops.");
+        System.out.println(e.getMessage());
+        break;
+      }
+    }
+  }
+}
+
+PARSER_END(P1_jpcano_jsgutierrezs)
+
+SKIP :
+{
+  " "
+| "\r"
+| "\t"
+| "\n"
+}
 
 TOKEN:
-{  < IF : "if" >
+{
+  < IF : "if" >
 | < VAR : "var" >
 | < DEFINE : "define" >
 | < PRINT : "print" >
 | < SMALL : ["a"-"z"] >
 | < LARGE : ["A"-"Z"] >
 | < NAME : (< SMALL >)+(< LARGE >|< SMALL >)* >
-}TOKEN : /* OPERATORS */{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
+}
+
+TOKEN : /* OPERATORS */
+{
+  < PLUS : "+" >
+| < MINUS : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE : "/" >
 | < EQUALS : "=" >
 | < MENOR : "< " >
 | < MAYOR : " >" >
 | < MAYORIG : "<=" >
 | < MENORIG : " >=" >
 | < IGUAL : "==" >
-| < DISTINTO : "!=" > }
+| < DISTINTO : "!=" > 
+}
 
-//12+12TOKEN :{  < CONSTANT : (< DIGIT >)+ >| < DIGIT : [ "0"-"9" ] >}
+//12+12
+
+TOKEN :
+{
+  < CONSTANT : (< DIGIT >)+ >
+| < DIGIT : [ "0"-"9" ] >
+}
 
 void guardarVar() throws Error:
 {
   Token t = null;
-}{
+}
+{
   t = < VAR > <NAME >"="(< CONSTANT >)*
   {
     String a = t.image;
@@ -72,7 +131,7 @@ void methods() throws Error:
   Token t;
 }
 {
-  t = < DEFINE ><NAME >"("(< NAME >)*"):"
+  t = < DEFINE ><NAME >"("< NAME >|(","< NAME >)*"):"
   {
     String a = t.image;
     String[] f = a.split("(");
@@ -93,7 +152,3 @@ void methods() throws Error:
   }
 }
 
-int one_line() :{
-
-}{  sum() ";"  {
-    int b = 0;    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    | < DIVIDE >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < CONSTANT >| "(" sum() ")"}
