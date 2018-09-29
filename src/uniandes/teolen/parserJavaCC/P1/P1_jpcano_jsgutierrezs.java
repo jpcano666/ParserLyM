@@ -9,13 +9,6 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
   private static ArrayList<String > metodos = new ArrayList<String >();
 
-  public static void insert(Token value)
-  {
-    variables.add(value.image);
-  }
-
-
-
   public static boolean buscarNombre(String a, ArrayList<String > list)
   {
         for(int i = 0; i < list.size(); ++i)
@@ -30,190 +23,207 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
 
   public static void main(String args []) throws ParseException
   {
-    P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
-    while (true)
+    try
     {
-      System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression like \u005c"1+(2+3)*4;\u005c" :");
-      try
-      {
-      }
-      catch (Exception e)
-      {
-        System.out.println("NOK.");
-        System.out.println(e.getMessage());
-        P1_jpcano_jsgutierrezs.ReInit(System.in);
-      }
-      catch (Error e)
-      {
-        System.out.println("Oops.");
-        System.out.println(e.getMessage());
-        break;
-      }
+      P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
+      parser.programa();
+      System.out.println("\u005ctAnalizador terminado");
+    }
+    catch(Exception e)
+    {
+      System.out.println(e.getMessage());
+          System.out.println("\u005ctAnalizador ha terminado.");
     }
   }
 
-  static final public void guardarVar() throws ParseException, Error {
-  Token t = null;
-    t = jj_consume_token(VAR);
-    jj_consume_token(IDENTIFIER);
-    jj_consume_token(EQUALS);
+  static final public void programa() throws ParseException {
     label_1:
     while (true) {
+      guardarVar();
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case MINUS:
-      case CONSTANT:
+      case VAR:
         ;
         break;
       default:
         jj_la1[0] = jj_gen;
         break label_1;
       }
+    }
+    label_2:
+    while (true) {
+      methods();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case DEFINE:
+        ;
+        break;
+      default:
+        jj_la1[1] = jj_gen;
+        break label_2;
+      }
+    }
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case PRINT:
+      print();
+      break;
+    default:
+      jj_la1[2] = jj_gen;
+      ;
+    }
+    jj_consume_token(0);
+  }
+
+  static final public void guardarVar() throws ParseException, Error {
+  Token t = null;
+    jj_consume_token(VAR);
+    t = jj_consume_token(IDENTIFIER);
+    jj_consume_token(EQUALS);
+    label_3:
+    while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case MINUS:
         jj_consume_token(MINUS);
         break;
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[3] = jj_gen;
         ;
       }
       jj_consume_token(CONSTANT);
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case MINUS:
+      case CONSTANT:
+        ;
+        break;
+      default:
+        jj_la1[4] = jj_gen;
+        break label_3;
+      }
     }
     String a = t.image;
-    String[] f = a.split("=");
-    String nombre = f[0].substring(3, f[0].length());
 
-        if(buscarNombre(nombre, variables))
+        if(buscarNombre(a, variables))
         {
           System.out.println("La variable ya existe");
           {if (true) throw new Error("La variable ya existe");}
         }
-        else if(nombre.equalsIgnoreCase("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
+        else if(a.equalsIgnoreCase("var") || a.equalsIgnoreCase("if") || a.equalsIgnoreCase("define") || a.equalsIgnoreCase("print"))
         {
           System.out.println("La palabra var est\u00c3\u00a1 reservada");
           {if (true) throw new Error("La palabra var est\u00c3\u00a1 reservada");}
         }
         else
         {
-          variables.add(nombre);
+          variables.add(a);
         }
   }
 
-  static final public void metodo() throws ParseException, Error {
+  static final public Token name() throws ParseException {
   Token t;
     t = jj_consume_token(IDENTIFIER);
-    jj_consume_token(LP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case IDENTIFIER:
-    case MINUS:
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case IDENTIFIER:
-        jj_consume_token(IDENTIFIER);
-        break;
-      case MINUS:
-        jj_consume_token(MINUS);
-        jj_consume_token(CONSTANT);
-        break;
-      default:
-        jj_la1[2] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
-      }
-      label_2:
+    case LP:
+      jj_consume_token(LP);
+      expresionArit();
+      label_4:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case COMMA:
           ;
           break;
         default:
-          jj_la1[3] = jj_gen;
-          break label_2;
+          jj_la1[5] = jj_gen;
+          break label_4;
         }
         jj_consume_token(COMMA);
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case IDENTIFIER:
-          jj_consume_token(IDENTIFIER);
-          break;
-        case MINUS:
-          jj_consume_token(MINUS);
-          jj_consume_token(CONSTANT);
-          break;
-        default:
-          jj_la1[4] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
+        expresionArit();
       }
+      jj_consume_token(RP);
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[6] = jj_gen;
       ;
     }
-    jj_consume_token(RP);
     String a = t.image;
-    String[] f = a.split("(");
-    String nombre = f[0];
 
-    if(!buscarNombre(nombre, metodos))
+    if(!buscarNombre(a, variables) && !buscarNombre(a, metodos))
     {
-      {if (true) throw new Error("El m\u00c3\u00a9todo no existe");}
+      {if (true) throw new Error("El nombre no existe");}
     }
+    else
+    {
+      {if (true) return t;}
+    }
+    throw new Error("Missing return statement in function");
   }
 
   static final public void methods() throws ParseException, Error {
   Token t;
-    t = jj_consume_token(DEFINE);
-    jj_consume_token(IDENTIFIER);
+    jj_consume_token(DEFINE);
+    t = jj_consume_token(IDENTIFIER);
     jj_consume_token(LP);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENTIFIER:
       jj_consume_token(IDENTIFIER);
-      label_3:
+      label_5:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case COMMA:
           ;
           break;
         default:
-          jj_la1[6] = jj_gen;
-          break label_3;
+          jj_la1[7] = jj_gen;
+          break label_5;
         }
         jj_consume_token(COMMA);
         jj_consume_token(IDENTIFIER);
       }
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       ;
     }
-    jj_consume_token(32);
-    label_4:
+    jj_consume_token(RP);
+    jj_consume_token(SEMICOLON);
+    label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IF:
+      case IDENTIFIER:
+      case MINUS:
+      case CONSTANT:
         ;
         break;
       default:
-        jj_la1[8] = jj_gen;
-        break label_4;
+        jj_la1[9] = jj_gen;
+        break label_6;
       }
-      ifSentence();
+      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case IF:
+        ifSentence();
+        break;
+      case IDENTIFIER:
+      case MINUS:
+      case CONSTANT:
+        expresionArit();
+        break;
+      default:
+        jj_la1[10] = jj_gen;
+        jj_consume_token(-1);
+        throw new ParseException();
+      }
     }
     String a = t.image;
-    String[] f = a.split("(");
-    String nombre = f[0].substring(6, f[0].length());
 
-    if(buscarNombre(nombre, metodos))
+    if(buscarNombre(a, metodos) || buscarNombre(a, variables))
     {
       {if (true) throw new Error("Ya existe el nombre");}
     }
-    else if(nombre.equals("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
+    else if(a.equals("var") || a.equalsIgnoreCase("if") || a.equalsIgnoreCase("define") || a.equalsIgnoreCase("print"))
     {
       {if (true) throw new Error("Var est\u00c3\u00a1 reservado");}
     }
     else
     {
-      metodos.add(nombre);
+      metodos.add(a);
     }
   }
 
@@ -238,7 +248,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_consume_token(DI);
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[11] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -259,7 +269,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       ifSentence();
       break;
     default:
-      jj_la1[10] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -274,17 +284,18 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       ifSentence();
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
+    jj_consume_token(RP);
   }
 
   static final public void valor() throws ParseException {
     if (jj_2_1(2)) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case IDENTIFIER:
-        jj_consume_token(IDENTIFIER);
+        name();
         break;
       case MINUS:
       case CONSTANT:
@@ -293,13 +304,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           jj_consume_token(MINUS);
           break;
         default:
-          jj_la1[12] = jj_gen;
+          jj_la1[14] = jj_gen;
           ;
         }
         jj_consume_token(CONSTANT);
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[15] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -311,7 +322,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         expresionArit();
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -328,16 +339,16 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           jj_consume_token(MINUS);
           break;
         default:
-          jj_la1[15] = jj_gen;
+          jj_la1[17] = jj_gen;
           ;
         }
         jj_consume_token(CONSTANT);
         break;
       case IDENTIFIER:
-        jj_consume_token(IDENTIFIER);
+        name();
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[18] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -348,27 +359,8 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       case CONSTANT:
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case IDENTIFIER:
-          jj_consume_token(IDENTIFIER);
+          name();
           break;
-        case MINUS:
-        case CONSTANT:
-          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-          case MINUS:
-            jj_consume_token(MINUS);
-            break;
-          default:
-            jj_la1[17] = jj_gen;
-            ;
-          }
-          jj_consume_token(CONSTANT);
-          break;
-        default:
-          jj_la1[18] = jj_gen;
-          jj_consume_token(-1);
-          throw new ParseException();
-        }
-        operadorArit();
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case MINUS:
         case CONSTANT:
           switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -381,22 +373,41 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           }
           jj_consume_token(CONSTANT);
           break;
-        case IDENTIFIER:
-          jj_consume_token(IDENTIFIER);
-          break;
-        case 33:
-          jj_consume_token(33);
-          expresionArit();
-          jj_consume_token(34);
-          break;
         default:
           jj_la1[20] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
+        operadorArit();
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case MINUS:
+        case CONSTANT:
+          switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+          case MINUS:
+            jj_consume_token(MINUS);
+            break;
+          default:
+            jj_la1[21] = jj_gen;
+            ;
+          }
+          jj_consume_token(CONSTANT);
+          break;
+        case IDENTIFIER:
+          name();
+          break;
+        case SR:
+          jj_consume_token(SR);
+          expresionArit();
+          jj_consume_token(SL);
+          break;
+        default:
+          jj_la1[22] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
         break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[23] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -410,41 +421,34 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   }
 
   static final public void print() throws ParseException {
-  Token t;
-    t = jj_consume_token(PRINT);
+    jj_consume_token(PRINT);
     jj_consume_token(LP);
     expresionArit();
     jj_consume_token(RP);
   }
 
-  static final public int operadorArit() throws ParseException {
+  static final public void operadorArit() throws ParseException {
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PLUS:
       jj_consume_token(PLUS);
-              {if (true) return 1;}
       break;
     case MINUS:
       jj_consume_token(MINUS);
-              {if (true) return 1;}
       break;
     case MULTIPLY:
       jj_consume_token(MULTIPLY);
-                 {if (true) return 1;}
       break;
     case DIVIDE:
       jj_consume_token(DIVIDE);
-               {if (true) return 1;}
       break;
     case MODULO:
       jj_consume_token(MODULO);
-                {if (true) return 1;}
       break;
     default:
-      jj_la1[22] = jj_gen;
-    {if (true) return 0;}
- {if (true) return 0;}
+      jj_la1[24] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
     }
-    throw new Error("Missing return statement in function");
   }
 
   static private boolean jj_2_1(int xla) {
@@ -461,18 +465,41 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     finally { jj_save(1, xla); }
   }
 
-  static private boolean jj_3R_6() {
+  static private boolean jj_3R_11() {
+    if (jj_scan_token(IDENTIFIER)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(17)) jj_scanpos = xsp;
+    if (jj_3R_12()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_7() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_1() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_7()) {
+    jj_scanpos = xsp;
+    if (jj_3R_8()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_8() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_scan_token(20)) jj_scanpos = xsp;
     if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
 
-  static private boolean jj_3R_5() {
+  static private boolean jj_3R_9() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(17)) jj_scanpos = xsp;
+    if (jj_scan_token(20)) jj_scanpos = xsp;
     if (jj_scan_token(CONSTANT)) return true;
     return false;
   }
@@ -480,20 +507,20 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   static private boolean jj_3_2() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_6()) {
+    if (jj_3R_9()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(11)) return true;
+    if (jj_3R_10()) return true;
     }
     return false;
   }
 
-  static private boolean jj_3_1() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(11)) {
-    jj_scanpos = xsp;
-    if (jj_3R_5()) return true;
-    }
+  static private boolean jj_3R_12() {
+    if (jj_scan_token(LP)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_10() {
+    if (jj_3R_11()) return true;
     return false;
   }
 
@@ -509,7 +536,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[23];
+  static final private int[] jj_la1 = new int[25];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -517,10 +544,10 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40020000,0x20000,0x20800,0x8000,0x20800,0x20800,0x8000,0x800,0x20,0xfc00000,0x40020820,0x40020820,0x20000,0x40020800,0x40020800,0x20000,0x40020800,0x20000,0x40020800,0x20000,0x40020800,0x40020800,0x2f0000,};
+      jj_la1_0 = new int[] {0x40,0x80,0x100,0x100000,0x100000,0x10000,0x2000,0x10000,0x800,0x100820,0x100820,0x7e000000,0x100820,0x100820,0x100000,0x100800,0x100800,0x100000,0x100800,0x100000,0x100800,0x100000,0x120800,0x100800,0x1780000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x0,0x2,0x0,0x2,0x2,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -544,7 +571,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -559,7 +586,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -577,7 +604,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -588,7 +615,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -605,7 +632,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -615,7 +642,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 23; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -732,7 +759,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 23; i++) {
+    for (int i = 0; i < 25; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

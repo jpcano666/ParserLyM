@@ -191,7 +191,7 @@ public class MundoParsers {
 					nuevoParser.guardarVar();
 				}
 				else if(texto.startsWith("define ")) {
-					P1_jpcano_jsgutierrezs.metodo();
+					P1_jpcano_jsgutierrezs.methods();
 				}
 				else if(texto.startsWith("print ")) {
 					P1_jpcano_jsgutierrezs.print();

@@ -18,13 +18,6 @@ public class P1_jpcano_jsgutierrezs
 
   private static ArrayList<String > metodos = new ArrayList<String >();
 
-  public static void insert(Token value)
-  {
-    variables.add(value.image);
-  }
-
-  
-
   public static boolean buscarNombre(String a, ArrayList<String > list)
   {
 	for(int i = 0; i < list.size(); ++i)
@@ -39,26 +32,16 @@ public class P1_jpcano_jsgutierrezs
   
   public static void main(String args []) throws ParseException
   {
-    P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
-    while (true)
+    try
     {
-      System.out.println("Reading from standard input...");
-      System.out.print("Enter an expression like \"1+(2+3)*4;\" :");
-      try
-      {
-      }
-      catch (Exception e)
-      {
-        System.out.println("NOK.");
-        System.out.println(e.getMessage());
-        P1_jpcano_jsgutierrezs.ReInit(System.in);
-      }
-      catch (Error e)
-      {
-        System.out.println("Oops.");
-        System.out.println(e.getMessage());
-        break;
-      }
+      P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
+      parser.programa();
+      System.out.println("\tAnalizador terminado");
+    }
+    catch(Exception e)
+    {
+      System.out.println(e.getMessage());
+	  System.out.println("\tAnalizador ha terminado.");
     }
   }
 }
@@ -82,6 +65,7 @@ TOKEN:
 | < SMALL : ["a"-"z"] > //5
 | < LARGE : ["A"-"Z"] > //6
 | < IDENTIFIER : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])*> //7
+| < METHOD : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])* >
 }
 
 TOKEN:
@@ -90,6 +74,8 @@ TOKEN:
 | < RP : ")" > //9
 | < SEMICOLON : ":" >//10
 | < COMMA : "," > //11
+| < SR : "[" >
+| < SL : "]" >
 }
 
 TOKEN : /* OPERATORS */
@@ -122,48 +108,57 @@ TOKEN :
 | < DECIMAL : (["0"-"9"])+["."](["0"-"9"])+ > //26
 }
 
+void programa():
+{}
+{
+  (guardarVar())+ (methods())+ [print()]< EOF >
+}
+
 void guardarVar() throws Error:
 {
   Token t = null;
 }
 {
-  t = < VAR > <IDENTIFIER >"="(["-"]< CONSTANT >)*
+  < VAR >
+  t = <IDENTIFIER >
+  < EQUALS >(["-"]< CONSTANT >)+
   {
     String a = t.image;
-    String[] f = a.split("=");
-    String nombre = f[0].substring(3, f[0].length());
 
-	if(buscarNombre(nombre, variables))
+	if(buscarNombre(a, variables))
 	{
 	  System.out.println("La variable ya existe");
 	  throw new Error("La variable ya existe");
 	}
-	else if(nombre.equalsIgnoreCase("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
+	else if(a.equalsIgnoreCase("var") || a.equalsIgnoreCase("if") || a.equalsIgnoreCase("define") || a.equalsIgnoreCase("print"))
 	{
 	  System.out.println("La palabra var está reservada");
 	  throw new Error("La palabra var está reservada");
 	}
 	else
 	{
-	  variables.add(nombre);
+	  variables.add(a);
 	}
   }
 }
 
-void metodo() throws Error:
+Token name():
 {
   Token t;
 }
 {
-  t = <IDENTIFIER >"("[(< IDENTIFIER >|"-"< CONSTANT >)(","(< IDENTIFIER >|"-"< CONSTANT >))*]")"
+  t = < IDENTIFIER >
+  [<LP >expresionArit()(< COMMA >expresionArit())*< RP >]
   {
     String a = t.image;
-    String[] f = a.split("(");
-    String nombre = f[0];
 
-    if(!buscarNombre(nombre, metodos))
+    if(!buscarNombre(a, variables) && !buscarNombre(a, metodos))
     {
-      throw new Error("El método no existe");
+      throw new Error("El nombre no existe");
+    }
+    else
+    {
+      return t;
     }
   }
 }
@@ -173,24 +168,24 @@ void methods() throws Error:
   Token t;
 }
 {
-  t = < DEFINE ><IDENTIFIER >"("[< IDENTIFIER >(","< IDENTIFIER >)*]"):"(ifSentence())*
+  < DEFINE >
+  t = <IDENTIFIER >
+  < LP >[< IDENTIFIER >(< COMMA >< IDENTIFIER >)*]<RP ><SEMICOLON >(ifSentence()|expresionArit())*
   
   {
     String a = t.image;
-    String[] f = a.split("(");
-    String nombre = f[0].substring(6, f[0].length());
 
-    if(buscarNombre(nombre, metodos))
+    if(buscarNombre(a, metodos) || buscarNombre(a, variables))
     {
       throw new Error("Ya existe el nombre");
     }
-    else if(nombre.equals("var") || nombre.equalsIgnoreCase("if") || nombre.equalsIgnoreCase("define") || nombre.equalsIgnoreCase("print"))
+    else if(a.equals("var") || a.equalsIgnoreCase("if") || a.equalsIgnoreCase("define") || a.equalsIgnoreCase("print"))
     {
       throw new Error("Var está reservado");
     }
     else
     {
-      metodos.add(nombre);
+      metodos.add(a);
     }
   }
 }
@@ -209,21 +204,20 @@ void operadores():
 void ifSentence():
 {}
 {
-  < IF ><LP >condicion()","(expresionArit()|ifSentence())","(expresionArit()|ifSentence())
+  < IF ><LP >condicion()","(expresionArit()|ifSentence())","(expresionArit()|ifSentence())< RP >
 }
 
 void valor():
 {
 }
 {
-  LOOKAHEAD(2)(< IDENTIFIER >|["-"]<CONSTANT >) | expresionArit()
+  LOOKAHEAD(2)(name()|["-"]<CONSTANT >) | expresionArit()
 }
 
 void expresionArit():
 {}
 {
-  LOOKAHEAD(2)(["-"]< CONSTANT >|< IDENTIFIER >)
-| (< IDENTIFIER >|["-"]< CONSTANT >) operadorArit() (["-"]< CONSTANT >|< IDENTIFIER >|"["expresionArit()"]")
+  LOOKAHEAD(2)(["-"]< CONSTANT >|name()) | (name()|["-"]< CONSTANT >) operadorArit() (["-"]< CONSTANT >|name()|< SR >expresionArit() < SL >)
 }
 
 void condicion():
@@ -234,23 +228,20 @@ void condicion():
 
 void print():
 {
-  Token t;
 }
 {
-  t = < PRINT >"("expresionArit()")"
+  < PRINT >"("expresionArit()")"
 }
 
-int operadorArit():
+void operadorArit():
 {}
 {
-  (< PLUS > { return 1; })
-| (< MINUS > {return 1; })
-| (< MULTIPLY > {return 1; })
-| (< DIVIDE > {return 1; })
-| (< MODULO > { return 1; })
-| { return 0; }
+  < PLUS >
+| < MINUS >
+| < MULTIPLY >
+| < DIVIDE >
+| < MODULO >
 
-{return 0; }
 }
 
 
