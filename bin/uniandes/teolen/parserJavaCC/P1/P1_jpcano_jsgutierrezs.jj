@@ -32,6 +32,7 @@ public class P1_jpcano_jsgutierrezs
   
   public static void main(String args []) throws ParseException
   {
+    System.out.println("hello world");
     try
     {
       P1_jpcano_jsgutierrezs parser = new P1_jpcano_jsgutierrezs(System.in);
@@ -71,7 +72,7 @@ TOKEN:
   < SMALL : ["a"-"z"] > //5
 | < LARGE : ["A"-"Z"] > //6
 | < IDENTIFIER : < SMALL >(< SMALL >|<LARGE >|["0"-"9"])*> //7
-| < METHOD : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])* >
+| < METHOD : < SMALL >(< SMALL >|< LARGE >|["0"-"9"])* >
 }
 
 TOKEN:
@@ -102,8 +103,8 @@ TOKEN:
 | < LE : ">=" > //21
 | < EQ : "==" > //22
 | < DI : "!=" > //23
-| < AND : "&&" > //24
-| < OR : "||" > //25
+| < AND : "and"| "&&" > //24
+| < OR : "or"| "||" > //25
 }
 
 //12+12
@@ -114,16 +115,17 @@ TOKEN :
 | < DECIMAL : (["0"-"9"])+["."](["0"-"9"])+ > //26
 }
 
+//es usado en la interfaz
 void one_line() :
 { }
 {
   guardarVar()|methods()|print()
 }
-
+//es usado en consola
 void programa():
 {}
 {
-  (guardarVar())+ (methods())+ [print()]< EOF >
+  (guardarVar())* (methods())* [print()]< EOF >
 }
 
 void guardarVar() throws Error:
@@ -215,9 +217,11 @@ void operadores():
 }
 
 void ifSentence():
-{}
 {
-  < IF ><LP >condicion()","(expresionArit()|ifSentence())","(expresionArit()|ifSentence())< RP >
+  Token t;}
+{
+  < IF >
+  t = <LP >condicion()((< AND >|< OR >) condicion())*","(expresionArit()|ifSentence())","(expresionArit()|ifSentence())< RP >
 }
 
 void valor():
@@ -228,9 +232,15 @@ void valor():
 }
 
 void expresionArit():
-{}
 {
-  LOOKAHEAD(2)(["-"]< CONSTANT >|name()) | (name()|["-"]< CONSTANT >) operadorArit() (["-"]< CONSTANT >|name()|< SR >expresionArit() < SL >)
+  Token t;
+  }
+{
+// LOOKAHEAD(2) t = (<MINUS >< CONSTANT >|< CONSTANT >|name()   operadorArit() (< MINUS >< CONSTANT >|< CONSTANT >|name()|< SR >expresionArit() < SL >))
+// ((<MINUS >)?< CONSTANT >| name()   operadorArit() (< MINUS >)?< CONSTANT >| name())
+(((< MINUS >)? < CONSTANT >|name()) operadorArit() ((< MINUS >)? < CONSTANT > | name()))
+|(< SR > expresionArit() < SL >)
+
 }
 
 void condicion():
