@@ -185,7 +185,7 @@ public class MundoParsers {
 		}
 		else if (parsers.get(currentParser).equals("P1_jpcano_jsgutierrezs")) {
 			P1_jpcano_jsgutierrezs nuevoParser = getP1_jpcano_jsgutierrezs();
-			P1_jpcano_jsgutierrezs.ReInit(new java.io.StringReader(texto));
+			nuevoParser.ReInit(new java.io.StringReader(texto));
 			try {
 				nuevoParser.one_line();
 				resp = new String("OK   " + "\n");
