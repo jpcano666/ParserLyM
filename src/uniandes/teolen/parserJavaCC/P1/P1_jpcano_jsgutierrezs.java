@@ -36,6 +36,24 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     }
   }
 
+  static final public void one_line() throws ParseException {
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case VAR:
+      guardarVar();
+      break;
+    case DEFINE:
+      methods();
+      break;
+    case PRINT:
+      print();
+      break;
+    default:
+      jj_la1[0] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+  }
+
   static final public void programa() throws ParseException {
     label_1:
     while (true) {
@@ -45,7 +63,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[0] = jj_gen;
+        jj_la1[1] = jj_gen;
         break label_1;
       }
     }
@@ -57,7 +75,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[1] = jj_gen;
+        jj_la1[2] = jj_gen;
         break label_2;
       }
     }
@@ -66,7 +84,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       print();
       break;
     default:
-      jj_la1[2] = jj_gen;
+      jj_la1[3] = jj_gen;
       ;
     }
     jj_consume_token(0);
@@ -84,7 +102,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         jj_consume_token(MINUS);
         break;
       default:
-        jj_la1[3] = jj_gen;
+        jj_la1[4] = jj_gen;
         ;
       }
       jj_consume_token(CONSTANT);
@@ -94,7 +112,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[4] = jj_gen;
+        jj_la1[5] = jj_gen;
         break label_3;
       }
     }
@@ -130,7 +148,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           ;
           break;
         default:
-          jj_la1[5] = jj_gen;
+          jj_la1[6] = jj_gen;
           break label_4;
         }
         jj_consume_token(COMMA);
@@ -139,7 +157,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_consume_token(RP);
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[7] = jj_gen;
       ;
     }
     String a = t.image;
@@ -170,7 +188,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           ;
           break;
         default:
-          jj_la1[7] = jj_gen;
+          jj_la1[8] = jj_gen;
           break label_5;
         }
         jj_consume_token(COMMA);
@@ -178,7 +196,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       }
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       ;
     }
     jj_consume_token(RP);
@@ -193,7 +211,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         ;
         break;
       default:
-        jj_la1[9] = jj_gen;
+        jj_la1[10] = jj_gen;
         break label_6;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -206,7 +224,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         expresionArit();
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[11] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -248,7 +266,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_consume_token(DI);
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -269,7 +287,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       ifSentence();
       break;
     default:
-      jj_la1[12] = jj_gen;
+      jj_la1[13] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -284,7 +302,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       ifSentence();
       break;
     default:
-      jj_la1[13] = jj_gen;
+      jj_la1[14] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -304,13 +322,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           jj_consume_token(MINUS);
           break;
         default:
-          jj_la1[14] = jj_gen;
+          jj_la1[15] = jj_gen;
           ;
         }
         jj_consume_token(CONSTANT);
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -322,7 +340,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         expresionArit();
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -339,7 +357,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           jj_consume_token(MINUS);
           break;
         default:
-          jj_la1[17] = jj_gen;
+          jj_la1[18] = jj_gen;
           ;
         }
         jj_consume_token(CONSTANT);
@@ -348,7 +366,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
         name();
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -368,13 +386,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
             jj_consume_token(MINUS);
             break;
           default:
-            jj_la1[19] = jj_gen;
+            jj_la1[20] = jj_gen;
             ;
           }
           jj_consume_token(CONSTANT);
           break;
         default:
-          jj_la1[20] = jj_gen;
+          jj_la1[21] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
@@ -387,7 +405,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
             jj_consume_token(MINUS);
             break;
           default:
-            jj_la1[21] = jj_gen;
+            jj_la1[22] = jj_gen;
             ;
           }
           jj_consume_token(CONSTANT);
@@ -401,13 +419,13 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
           jj_consume_token(SL);
           break;
         default:
-          jj_la1[22] = jj_gen;
+          jj_la1[23] = jj_gen;
           jj_consume_token(-1);
           throw new ParseException();
         }
         break;
       default:
-        jj_la1[23] = jj_gen;
+        jj_la1[24] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -421,7 +439,8 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   }
 
   static final public void print() throws ParseException {
-    jj_consume_token(PRINT);
+  Token t;
+    t = jj_consume_token(PRINT);
     jj_consume_token(LP);
     expresionArit();
     jj_consume_token(RP);
@@ -445,7 +464,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_consume_token(MODULO);
       break;
     default:
-      jj_la1[24] = jj_gen;
+      jj_la1[25] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -463,19 +482,6 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     try { return !jj_3_2(); }
     catch(LookaheadSuccess ls) { return true; }
     finally { jj_save(1, xla); }
-  }
-
-  static private boolean jj_3R_11() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_12()) jj_scanpos = xsp;
-    return false;
-  }
-
-  static private boolean jj_3R_7() {
-    if (jj_3R_11()) return true;
-    return false;
   }
 
   static private boolean jj_3_1() {
@@ -524,6 +530,19 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     return false;
   }
 
+  static private boolean jj_3R_11() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_12()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_7() {
+    if (jj_3R_11()) return true;
+    return false;
+  }
+
   static private boolean jj_initialized_once = false;
   /** Generated Token Manager. */
   static public P1_jpcano_jsgutierrezsTokenManager token_source;
@@ -536,7 +555,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[25];
+  static final private int[] jj_la1 = new int[26];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -544,10 +563,10 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x40,0x80,0x100,0x100000,0x100000,0x10000,0x2000,0x10000,0x800,0x100820,0x100820,0x7e000000,0x100820,0x100820,0x100000,0x100800,0x100800,0x100000,0x100800,0x100000,0x100800,0x100000,0x120800,0x100800,0x1780000,};
+      jj_la1_0 = new int[] {0x1c0,0x40,0x80,0x100,0x100000,0x100000,0x10000,0x2000,0x10000,0x800,0x100820,0x100820,0x7e000000,0x100820,0x100820,0x100000,0x100800,0x100800,0x100000,0x100800,0x100000,0x100800,0x100000,0x120800,0x100800,0x1780000,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x0,0x2,0x0,0x2,0x2,0x0,};
+      jj_la1_1 = new int[] {0x0,0x0,0x0,0x0,0x0,0x2,0x0,0x0,0x0,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x2,0x0,0x2,0x0,0x2,0x0,0x2,0x2,0x0,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[2];
   static private boolean jj_rescan = false;
@@ -571,7 +590,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -586,7 +605,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -604,7 +623,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -615,7 +634,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -632,7 +651,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -642,7 +661,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 25; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 26; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -759,7 +778,7 @@ public class P1_jpcano_jsgutierrezs implements P1_jpcano_jsgutierrezsConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 25; i++) {
+    for (int i = 0; i < 26; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {

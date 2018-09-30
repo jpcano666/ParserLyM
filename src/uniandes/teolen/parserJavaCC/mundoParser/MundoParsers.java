@@ -187,15 +187,7 @@ public class MundoParsers {
 			P1_jpcano_jsgutierrezs nuevoParser = getP1_jpcano_jsgutierrezs();
 			P1_jpcano_jsgutierrezs.ReInit(new java.io.StringReader(texto));
 			try {
-				if(texto.startsWith("var ")) {
-					nuevoParser.guardarVar();
-				}
-				else if(texto.startsWith("define ")) {
-					P1_jpcano_jsgutierrezs.methods();
-				}
-				else if(texto.startsWith("print ")) {
-					P1_jpcano_jsgutierrezs.print();
-				}
+				nuevoParser.one_line();
 				resp = new String("OK   " + "\n");
 			} catch (Exception e) {
 				resp = new String("Error de sintaxis: " + e.getMessage());

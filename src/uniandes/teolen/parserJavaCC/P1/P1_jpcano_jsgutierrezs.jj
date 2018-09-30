@@ -62,9 +62,15 @@ TOKEN:
 | < VAR : "var" > //2
 | < DEFINE : "define" > //3
 | < PRINT : "print" > //4
-| < SMALL : ["a"-"z"] > //5
+
+
+}
+
+TOKEN:
+{
+  < SMALL : ["a"-"z"] > //5
 | < LARGE : ["A"-"Z"] > //6
-| < IDENTIFIER : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])*> //7
+| < IDENTIFIER : < SMALL >(< SMALL >|<LARGE >|["0"-"9"])*> //7
 | < METHOD : ["a"-"z"](["a"-"z","A"-"Z","0"-"9"])* >
 }
 
@@ -108,6 +114,12 @@ TOKEN :
 | < DECIMAL : (["0"-"9"])+["."](["0"-"9"])+ > //26
 }
 
+void one_line() :
+{ }
+{
+  guardarVar()|methods()|print()
+}
+
 void programa():
 {}
 {
@@ -120,8 +132,9 @@ void guardarVar() throws Error:
 }
 {
   < VAR >
-  t = <IDENTIFIER >
+  (t =<IDENTIFIER >)
   < EQUALS >(["-"]< CONSTANT >)+
+  
   {
     String a = t.image;
 
@@ -228,9 +241,10 @@ void condicion():
 
 void print():
 {
+  Token t;
 }
 {
-  < PRINT >"("expresionArit()")"
+  t = < PRINT >"("expresionArit()")"
 }
 
 void operadorArit():
