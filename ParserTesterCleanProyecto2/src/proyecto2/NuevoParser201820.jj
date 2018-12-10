@@ -80,11 +80,12 @@ TOKEN :
 
 int one_line() :
 { ArrayList <String >  nullParams =  new ArrayList <String > ();}
+int i;
 {
     (varDef())*
     (funDef())*
-    < PRINT > "("  exp(nullParams)  ")"
-{return 0;}
+    < PRINT > "("  i=exp(nullParams)  ")"
+{return i;}
 }
 
 void varDef():
@@ -126,16 +127,7 @@ void funDef():
   exp(params)
 }
 
-int evaluateFunc(Token k) :
-{
-  Token t;
-  int res;
-  String a;
-}
-{
-  //a =nameTable.get(k.image);
-  t = null;
-}
+
 
 int exp(ArrayList <String > params) :
 {
@@ -347,14 +339,19 @@ boolean boolFact(ArrayList <String > params) :
    }
 }
 
-int print() :
-{
-  Token t;
-  
-} {
-  < PRINT > "(" < NAME > "(" < NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")" ("," < NAME > "("< NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")")* ")"
-}
-  
+//int print() :
+//{
+//  Token t;
+//  int i;
+//  
+//} {
+//  < PRINT > "(" < NAME > "(" < NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")" ("," < NAME > "("< NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")")* ")"
+//| < PRINT > "(" i=exp() ")"
+//{
+//  System.out.println(i);
+//  return i; }
+//}
+//  
 
 Token cmpOperator():
 {
