@@ -1,0 +1,374 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+*/
+
+options
+{
+  static = false;
+}
+
+PARSER_BEGIN(NuevoParser201820)
+package proyecto2;
+import java.util.*;
+import calculator.*;
+public class NuevoParser201820
+{
+
+HashMap<String, Integer> nameTable = new HashMap<String, Integer>();
+
+public static void main(String[] args)
+{
+	System.out.println("Hello World");
+	try
+	{
+	  NuevoParser201820 parser = new NuevoParser201820(System.in);
+	  parser.one_line();
+	}
+	catch(Exception e)
+	{
+	  e.printStackTrace();
+	}
+}
+
+/**
+Esto guarda -1 por cada nombre que sea una variable, y el número de argumentos si es una función
+*/
+}
+
+PARSER_END(NuevoParser201820)
+
+SKIP :
+{
+  " "
+| "\r" 
+| "\t"
+| "\n"
+| "/*"
+}
+
+TOKEN : // OPERATORS 
+{
+  < PLUS : "+" >
+| < MINUS : "-" >
+| < MULTIPLY : "*" >
+| < DIVIDE : "/" >
+| < EQ : "==" >
+| < NEQ : "!=" >
+| < LT : "<" >
+
+| < LTE: "<=" >
+| < GTE: ">=" >
+| < GT: ">" >
+}
+
+TOKEN :
+{
+  <INT : (< DIGIT >)+ >
+| < #DIGIT : [ "0"-"9" ] >
+| < PRINT: "print" >
+| < VAR: "var" >
+| < IF: "if" >
+| < DEFINE: "define" >
+| < #SMALL : ["a"-"z"] >
+| < #LARGE : ["A"-"Z"] >
+| < NOT: "not" >
+| < AND: "and" >
+| < OR: "or" >
+| < NAME : < SMALL >(< SMALL >|< LARGE >|< DIGIT >)* >
+
+}
+
+int one_line() :
+{ ArrayList <String >  nullParams =  new ArrayList <String > ();}
+{
+    (varDef())*
+    (funDef())*
+    < PRINT > "("  exp(nullParams)  ")"
+{return 0;}
+}
+
+void varDef():
+{
+Token  t, f;
+ArrayList <String >  nullParams =  new ArrayList <String > ();
+VarDef varDef;
+}
+{
+  < VAR > t=< NAME > "=" exp(nullParams)
+  {
+     if (nameTable.get(t.image) != null)  throw new Error("Varable ya definida");
+     else  nameTable.put(t.image,-1);
+  }
+}
+
+void funDef():
+{
+  Token  t,f;
+  ArrayList <String >  params =  new ArrayList <String > ();
+  
+}
+{
+  < DEFINE > f=< NAME >"("
+              (
+                t = < NAME > { params.add(t.image);}
+             	( "," t = < NAME >
+   					{ if (params.indexOf(t.image) == -1)
+                        	params.add(t.image);
+                       else
+                       		throw new Error("Nombre de parámetro repetido: "+t.image);
+   					 })*
+   				)? ")" ":"
+  {
+    // se guarda el nombre y la aridad antes del cuerpo  de la funcion para permitir recursion
+    if (nameTable.get(f.image) != null)  throw new Error("Nombre ya definido: "+f.image);
+    else nameTable.put(f.image,params.size());
+  }
+  exp(params)
+}
+
+int evaluateFunc(Token k) :
+{
+  Token t;
+  int res;
+  String a;
+}
+{
+  //a =nameTable.get(k.image);
+  t = null;
+}
+
+int exp(ArrayList <String > params) :
+{
+  int i = 0;
+  int a;
+  int b;
+  Token op;
+  String opS;
+  Token t;
+}
+{
+// Parses  E -> E + T
+//         E -> E - T
+//         E -> T
+//   in EBNF:  E -> T {+ T   | - T }
+  
+ a=term(params) ( op=< PLUS > b=term(params) 
+          |  op=< MINUS > b=term(params) 
+        )*
+
+        
+{
+  opS = op.image;
+  MathExp exp = new MathExp(a, opS, b);
+  i = exp.getExp();
+  return i;
+}
+        
+}
+
+int term(ArrayList <String > params) :
+{
+	int i = 0;
+	int a;
+	int b;
+	Token op;
+	String opS;
+}
+{
+// Parses  T -> T * F
+//         T -> T / F
+//         T -> F
+//   in EBNF:  T -> F {* F   | /  F }
+  
+ a=fact(params) ( op=< MULTIPLY > b=fact(params)
+ | op=< DIVIDE > b=fact(params)
+ )*
+
+ {
+   opS = op.image;
+   MathExp expresion = new MathExp(a, opS, b);
+   i = expresion.getExp();
+   return i;
+ }
+}
+int fact(ArrayList <String > params) :
+{
+// Parses  F -> B
+//         F -> -B
+//         B -> num
+//         B -> '(' E ')'
+//         B -> var
+//    	   B -> funName( [arg {, args }])
+//   in EBNF:  F -> [-](var |num |'(' E ')')
+
+int i = 0;
+Token t;
+Token n;
+}
+{
+    (< MINUS > )?
+    ( varORcall(params) 
+                             | i = num()
+                             | "("i=exp(params) ")"
+                             |  i = condExp(params)
+                         )
+
+                         {return i; }
+}
+
+
+int num() throws Error:
+{	
+	int total=1;
+	Token token;
+}
+
+{
+	(token=<INT>)
+
+	{ 
+		try {
+			total = Integer.parseInt(token.image);
+		} 
+		catch (NumberFormatException ee) 
+		{
+			// Dada la forma de <ENTERO>, sabemos que solo puede tener digitos 
+			throw new Error("Numero demasiado grande: "+token.image);
+		}
+		return total;
+     }
+}
+
+
+void varORcall(ArrayList <String > params) throws Error:
+{	
+	int args=-1, def=-2;
+	boolean isParam=false;
+	Token token;
+}
+
+{
+	token=<NAME> {isParam = (params.indexOf(token.image) != -1); }
+    ("(" {args++; } (exp(params) {args++; } ("," exp(params) {args++; })*)? ")")?
+  {
+     
+   if (isParam) {
+	 if (args > -1)  throw new Error("Parametros no pueden ir seguidos de ( ):"+token.image);
+   }
+   else { 
+		if (nameTable.get(token.image) == null) throw new Error("Nombre indefinido: "+token.image);
+    	else { 
+			if (nameTable.get(token.image)==-1) {
+			  	if (args > -1) throw new Error("Variables no pueden ir segudas de  ():" + token.image);
+             }
+   			else {
+   			  	if (args!=nameTable.get(token.image) )
+   			  	    throw new Error("Numero de argumentos invalido: "+args+" para :"+ token.image+"/"+nameTable.get(token.image)); 
+  			}
+  		}
+	}
+  }
+}
+
+int condExp(ArrayList <String > params) throws Error:
+{
+  int i = 0;
+}
+
+{
+    < IF > "(" boolExp(params) "," exp(params) "," exp(params) ")"
+
+    { return i;}
+}
+
+boolean boolExp(ArrayList <String > params) :
+{
+  boolean a = false, b = false;
+  Token t = null;
+}
+{
+// Parses  BE -> BE or BT
+//         BE -> BE
+//   in EBNF:  BE -> BT {or B }
+  
+ a=boolTerm(params) ( t=< OR > b=boolTerm(params))*
+
+ {
+   if(t== null)
+   {
+     return a;
+   }
+   else
+   {
+     BoolDeclaration bool = new BoolDeclaration(a, b, t.image);
+		return bool.getComp();
+ 	}
+ }
+}
+
+boolean boolTerm(ArrayList <String > params) :
+{
+boolean a = false, b = false;
+Token t = null;
+  }
+{
+// Parses  BT -> BT and BF
+//         BT -> BF
+//   in EBNF:  BT ->  BF {and BF}
+a = boolFact(params) (t= < AND > b= boolFact(params))*
+
+{
+  	if(t==null)
+  	{
+  	  return a;
+  	}
+  	else
+  	{ 
+		BoolDeclaration bool = new BoolDeclaration(a, b, t.image);
+		return bool.getComp();
+	}
+}
+}
+
+boolean boolFact(ArrayList <String > params) :
+{
+  Token t=null;
+  int i=0, j=0;
+  boolean a;
+}
+{
+    (< NOT > )? (      "(" condExp(params) ")"
+        |  "["  i=exp(params)  t=cmpOperator()   j=exp(params) "]"
+   )
+
+   {
+     BoolDeclaration bool = new BoolDeclaration(i, j, t.image);
+     return bool.getComp();
+   }
+}
+
+int print() :
+{
+  Token t;
+  
+} {
+  < PRINT > "(" < NAME > "(" < NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")" ("," < NAME > "("< NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")")* ")"
+}
+  
+
+Token cmpOperator():
+{
+  Token t;
+}
+{
+   		t=< EQ >
+	|	t=< NEQ >  
+	|	t=< LT >   
+ 	|	t=< GT >
+ 	|	t=< LTE >  
+	|	t=< GTE >
+
+	{
+	  return t;
+	}
+}

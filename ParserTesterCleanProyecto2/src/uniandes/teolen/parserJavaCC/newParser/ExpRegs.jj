@@ -1,0 +1,122 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.28+ wizard for JavaCC 1.5.0+
+ */options{  static = false;}PARSER_BEGIN(ExpRegs)package uniandes.teolen.parserJavaCC.newParser;
+import java.util.*;
+
+public class ExpRegs{
+  static ArrayList<String > mem;
+  public ExpRegs()
+  {	mem = new ArrayList< String>();
+  }
+
+  public boolean existe(String var)
+  {	boolean a = false;
+	for(int i = 0; i < mem.size() && !a; i++)
+	{
+		if(mem.get(i).equalsIgnoreCase(var))
+		{
+		  a = true;
+		}
+	}
+	return a;
+  }}PARSER_END(ExpRegs)SKIP :{  " "| "\r"| "\t"| "\n"}/*TOKEN : /* OPERATORS{  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >
+}*/
+TOKEN:
+{
+	< UNION: "|" >
+| 	< CLOSURE_1: "*" >
+| 	< CLOSURE_2: "+" >
+| 	< LPAREN: "(" >
+| 	< RPAREN: ")" >
+| 	< LBRACE: "{" >
+| 	< RBRACE: "}" >
+| 	< ASIGNACION: "=" >
+| 	< DEFINICION: ":" >
+|  	< COMMA: "," >
+}
+
+TOKEN:
+{	< SYMBOL : (< DIGIT >|< SMALL >)(< SMALL >|< DIGIT >|< LARGE >)*>
+| 	< ALPHABET: "Alphabet" >
+| 	< ER_NAME: (< LARGE >)(< DIGIT >|< SMALL >)+ >
+| 	< #DIGIT: ["0"-"9"] >
+| 	< #LARGE: ["A"-"Z"] >
+| 	< #SMALL : ["a"-"z"] >
+}
+
+String  ER_NAME():
+{
+  Token t;
+String linea;
+  }
+{
+  (t = < ER_NAME >"= ("ER()")"(< EMPTY_STRING > |"*"|"+"))
+
+  {
+  linea = t.image;
+  return linea;
+}
+}
+
+String ER():
+{
+  String partes;
+  Token t;
+}
+{
+  t = < SYMBOL > (< EMPTY_STRING>|"*"|"+")(< SYMBOL >(< EMPTY_STRING >|"*"|"+"))*(< UNION >< SYMBOL >(< EMPTY_STRING > | "*" | "+"))*
+  {
+    partes = t.image;
+    return partes;
+  }
+}
+
+int expsRegs()throws Error:
+{
+  int r = 0;
+  String linea;
+}
+{
+	linea = alphabet()(ER_NAME())*	  {
+	    if(existe(linea))
+	    {
+	      throw new Error("La variable ya existe");
+	     }
+	     else
+	     {
+	       mem.add(linea);
+	      }
+	    return r;
+	  }
+}
+
+String alphabet():
+{
+	Token t;
+	String linea;
+}
+{
+  t = < ALPHABET ><DEFINICION ><LBRACE >symbol()< RBRACE >
+  {
+    linea = t.image;
+    return linea;
+  }
+}
+
+String[] symbol():
+{
+  String[] partes;
+  Token t;
+}
+{
+  (t = < SYMBOL >(< COMMA ><SYMBOL >)*)
+  {
+	partes = t.image.split(",");
+	return partes;
+  }
+}
+
+TOKEN:
+{	< EMPTY_SET: "@" >
+| 	< EMPTY_STRING: "$" > 
+}TOKEN :{  < CONSTANT : (< DIGIT >)+ >}/*int one_line() :{}{  sum() ";"  {    return 0;  }| ";"  {    return 1;  }}void sum() :{}{  term()  (    (      < PLUS >    | < MINUS >    )    term()  )*}void term() :{}{  unary()  (    (      < MULTIPLY >    | < DIVIDE >    )    unary()  )*}void unary() :{}{  < MINUS > element()| element()}void element() :{}{  < CONSTANT >| "(" sum() ")"}*/

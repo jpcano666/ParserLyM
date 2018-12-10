@@ -1,0 +1,45 @@
+/**
+ * JavaCC template file created by SF JavaCC plugin 1.5.17+ wizard for JavaCC 1.5.0+
+*/
+
+
+options{  static = false;}PARSER_BEGIN(NuevoParser)package uniandes.teolen.parserJavaCC.newParser;
+
+
+public class NuevoParser{
+  }PARSER_END(NuevoParser)SKIP :{  " "| "\r" | "\t"| "\n"}TOKEN : // OPERATORS {  < PLUS : "+" >| < MINUS : "-" >| < MULTIPLY : "*" >| < DIVIDE : "/" >}TOKEN :{  <INT : (< DIGIT >)+ >| < #DIGIT : [ "0"-"9" ] >}int one_line() :{int val=0;}{  val = exp() ";"  {    return (int) Math.power(2,2);  }| ";"  {    return 1;  }}int exp() :{int val,v;}{  val= term()  (    (      < PLUS > v= term()      {      val+=v;}    | < MINUS > v= term()    {      val-=v;    }         )      )*{return val;}
+}int term() :{int val,v;}{  val=fact()  (    (      < MULTIPLY >v=fact()      {      val = val*v;}    | < DIVIDE >v=fact() {
+      val = val/v;}    )      )*
+  {
+return val;}}int fact() :{int val, s = 1;}{    (< MINUS >    {s = -1;})? (    val=num()
+  | "(" val = exp() ")")
+{
+return s*val;}
+}
+
+
+int num() throws Error:
+{	
+	int total=1;
+	Token token;
+}
+
+{
+	(token=<INT>)
+
+	{ 
+		try {
+			total = Integer.parseInt(token.image);
+		} 
+		catch (NumberFormatException ee) 
+		{
+			// Dada la forma de <ENTERO>, sabemos que solo puede tener digitos y signo
+			throw new Error("Numero demasiado grande"+token.image);
+		}
+		return total;
+     }
+     
+     
+}
+
+
