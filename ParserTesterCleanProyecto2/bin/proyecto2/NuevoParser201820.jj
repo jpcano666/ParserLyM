@@ -64,7 +64,7 @@ TOKEN : // OPERATORS
 TOKEN :
 {
   <INT : (< DIGIT >)+ >
-| < #DIGIT : [ "0"-"9" ] >
+| < DIGIT : [ "0"-"9" ] >
 | < PRINT: "print" >
 | < VAR: "var" >
 | < IF: "if" >
@@ -79,12 +79,14 @@ TOKEN :
 }
 
 int one_line() :
-{ ArrayList <String >  nullParams =  new ArrayList <String > ();}
+{ ArrayList <String >  nullParams =  new ArrayList <String > ();
+int i;}
+
 {
     (varDef())*
     (funDef())*
-    < PRINT > "("  exp(nullParams)  ")"
-{return 0;}
+    < PRINT > "("  i=exp(nullParams)  ")"
+{return i;}
 }
 
 void varDef():
@@ -126,24 +128,13 @@ void funDef():
   exp(params)
 }
 
-int evaluateFunc(Token k) :
-{
-  Token t;
-  int res;
-  String a;
-}
-{
-  //a =nameTable.get(k.image);
-  t = null;
-}
-
 int exp(ArrayList <String > params) :
 {
   int i = 0;
-  int a;
-  int b;
-  Token op;
-  String opS;
+  int a = 0;
+  int b = 0;
+  Token op = null;
+  String opS = "";
   Token t;
 }
 {
@@ -152,11 +143,9 @@ int exp(ArrayList <String > params) :
 //         E -> T
 //   in EBNF:  E -> T {+ T   | - T }
   
- a=term(params) ( op=< PLUS > b=term(params) 
+ a=term(params) ( op=< PLUS > b=term(params)
           |  op=< MINUS > b=term(params) 
         )*
-
-        
 {
   opS = op.image;
   MathExp exp = new MathExp(a, opS, b);
@@ -169,10 +158,10 @@ int exp(ArrayList <String > params) :
 int term(ArrayList <String > params) :
 {
 	int i = 0;
-	int a;
-	int b;
-	Token op;
-	String opS;
+	int a = 0;
+	int b = 0;
+	Token op = null;
+	String opS = "";
 }
 {
 // Parses  T -> T * F
@@ -347,14 +336,68 @@ boolean boolFact(ArrayList <String > params) :
    }
 }
 
-int print() :
+int call():
 {
+  ArrayList <String > params = new ArrayList< String>();
   Token t;
-  
-} {
-  < PRINT > "(" < NAME > "(" < NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")" ("," < NAME > "("< NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")")* ")"
+  Token num;
+  int i = 0;
+}
+{
+  t = < NAME > "("num=< DIGIT > { i++; params.add(num.image);}(","< DIGIT > { i++; params.add(num.image);})*")"
+{
+  if(nameTable.get(t.image) == null) throw new Error("Nombre no definido");
+  else
+  {
+	if(nameTable.get(t.image) == -1) throw new Error("Llamado a una variable");
+	else
+	{
+		if(i < nameTable.get(t.image) || i > nameTable.get(t.image)) throw new Error("No está el número de parámetros");
+	}
+  }
+  return exp(params);
 }
   
+}
+
+void print():
+{
+  int a, b;
+  Token t;
+}
+{
+  < PRINT >"("a=call()(t=oper()b=call() { MathExp me = new MathExp(a, t.image, b);})*
+}
+
+//int print() :
+//{
+//  Token t;
+//  int i;
+//  
+//} {
+//  < PRINT > "(" < NAME > "(" < NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")" ("," < NAME > "("< NAME > | (< DIGIT >)* ("," < NAME > | (< DIGIT >)* )* ")")* ")"
+//| < PRINT > "(" i=exp() ")"
+//{
+//  System.out.println(i);
+//  return i; }
+//}
+//
+
+Token oper():
+{
+  Token t;
+}
+{
+  t=< PLUS >
+| t=< MINUS >
+| t=< MULTIPLY >
+| t=< DIVIDE >
+
+{
+  return t;
+}
+}
+
 
 Token cmpOperator():
 {
