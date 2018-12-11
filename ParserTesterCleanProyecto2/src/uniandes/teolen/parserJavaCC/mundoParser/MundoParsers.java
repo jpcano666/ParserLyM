@@ -31,6 +31,7 @@ public class MundoParsers {
 	    parsers.add("Parser Prolog");
 	    parsers.add("Parser G");
 	    parsers.add("Nuevo Parser POST");
+	    parsers.add("Parser Proyecto 2");
 	    
 	    currentParser =  0;
 
@@ -60,6 +61,10 @@ public class MundoParsers {
 	}
 	public ParserG getGParser(){
 		return new ParserG(System.in);
+	}
+	
+	public NuevoParser201820 getNuevoParser2(){
+		return new NuevoParser201820(System.in);
 	}
 	
 	
@@ -179,5 +184,20 @@ public class MundoParsers {
 		}
 		return "\n SISTEMA " + parsers.get(currentParser) + ": " + resp + "\n";
 	}
+	
+	else if(parsers.get(currentParser).equals("Parser Proyecto 2")){
+		NuevoParser201820 nuevoParser = getNuevoParser2();
+		nuevoParser.ReInit(new java.io.StringReader(texto));
+		try {
+	    	int v = nuevoParser.one_line(); 
+	    	resp = new String("OK   "+v+ "\n");
+	    }catch (Exception e) {
+	        resp = new String ("Error de Sintaxis: "+e.getMessage());
+	     } catch (Error e) {
+	    	 resp = new String ("Error Lexico: "+e.getMessage());
+	     }
+	}
+	return "\n SISTEMA " + parsers.get(currentParser) + ": " + resp + "\n";
+}
 
 }
